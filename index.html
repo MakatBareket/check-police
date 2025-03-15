@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מסוף - משטרת ישראל</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            direction: rtl;
+            overflow: hidden;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 500px;
+        }
+        .logo {
+            width: 50px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #003087;
+            font-size: 24px;
+            margin: 0;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #003087;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            max-width: 400px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .warning {
+            color: red;
+            font-weight: bold;
+        }
+        .loading {
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.gov.il/BlobFolder/office/israel_police/he/israel_police.png" alt="לוגו משטרת ישראל" class="logo">
+        <h1>מסוף - מערכת בדיקת רשתות</h1>
+        <p>משטרת ישראל - יחידת הסייבר</p>
+    </div>
+
+    <div id="initialPopup" class="popup">
+        <img src="https://www.gov.il/BlobFolder/office/israel_police/he/israel_police.png" alt="לוגו משטרת ישראל" class="logo">
+        <p><strong>שוטר/קצין יקר,</strong></p>
+        <p>ודא כי אתה מחובר לרשת המקור החשוד (רשת ביתית של החשוד או מקור אחר לפי הוראת הממונה). הבדיקה תתחיל באופן אוטומטי תוך שניות.</p>
+    </div>
+
+    <div id="resultPopup" class="popup">
+        <img src="https://www.gov.il/BlobFolder/office/israel_police/he/israel_police.png" alt="לוגו משטרת ישראל" class="logo">
+        <p><strong>תוצאות הבדיקה:</strong></p>
+        <p>כתובת IP: <span id="fakeIP"></span></p>
+        <p id="resultMessage"></p>
+    </div>
+
+    <script>
+        // מניעת יציאה מהדף למשך 7 שניות
+        window.onbeforeunload = function() {
+            return "הבדיקה בעיצומה, אנא המתן לסיום התהליך.";
+        };
+
+        setTimeout(function() {
+            window.onbeforeunload = null; // הסרת המניעה לאחר 7 שניות
+        }, 7000);
+
+        // הצגת הפופ-אפ הראשוני
+        const initialPopup = document.getElementById('initialPopup');
+        initialPopup.style.display = 'block';
+
+        // יצירת IP מומצא שנראה אמיתי
+        function generateFakeIP() {
+            return `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+        }
+
+        // הצגת תוצאה לאחר 2 שניות
+        setTimeout(function() {
+            initialPopup.style.display = 'none';
+            const resultPopup = document.getElementById('resultPopup');
+            const resultMessage = document.getElementById('resultMessage');
+            const fakeIP = document.getElementById('fakeIP');
+            fakeIP.textContent = generateFakeIP();
+
+            // יחס של 1:3 לתוצאה תקינה ו-2:3 לתוצאה חשודה
+            const random = Math.random();
+            if (random <= 0.33) {
+                resultMessage.innerHTML = '<span class="success">✔ הרשת נקייה ותקינה. המידע הועבר בהצלחה.</span>';
+            } else {
+                resultMessage.innerHTML = '<span class="warning">⚠ אזהרה חמורה: ב-IP זה נמצאו חומרים חשודים. הפרטים דווחו. נא לעכב את החשוד ולפעול לפי הנחיות הממונה. במידת הצורך, צור קשר מיידי עם המפקד הישיר.</span>';
+            }
+            resultPopup.style.display = 'block';
+        }, 2000);
+    </script>
+</body>
+</html>
